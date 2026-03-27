@@ -1,0 +1,15 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background-image: url(./img/fundo_principal.png);
+    background-size: cover;          /* Faz a imagem cobrir a tela toda */
+    background-position: center;     /* Centraliza a imagem */
+    background-repeat: no-repeat;    /* Impede que a imagem se repita */
+    background-attachment: fixed;    /* Deixa o fundo fixo ao rolar */
+    color: rgb(186, 186, 186);
+    height: 100vh;                   /* Garante que o body tenha a altura da tela */
+    overflow: hidden;                /* Evita barras de rolagem desnecessárias */
+}
