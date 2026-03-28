@@ -158,6 +158,12 @@ class Text {
         des.fillText(text, x, y)
     }
 
+     des_imagem(url, x, y, w, h) {
+        let img = new Image()
+        img.src = url
+        des.drawImage(img, x, y, w, h)
+    }
+
         des_placar_com_logo(pontos, x, y, corText, fontText, urlImagemLogo) {
         des.save(); // salva o estado do canvas
 

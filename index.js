@@ -59,7 +59,7 @@ function game_over() {
 }
 
 function ver_fase() { 
-    if (jogador.pontos > 10 && fase === 1) {
+    if (jogador.pontos > 1 && fase === 1) {
         fase = 2
         jogadorInimigo.vel = 10
         jogadorInimigo2.vel = 10
@@ -68,7 +68,7 @@ function ver_fase() {
         jogadorInimigo5.vel = 10
         jogadoraAmigo5.vel = 7
         jogadoraAmigo6.vel = 7
-    } else if (jogador.pontos > 20 && fase === 2) {
+    } else if (jogador.pontos > 2 && fase === 2) {
         fase = 3
         jogadorInimigo.vel = 12
         jogadorInimigo2.vel = 12
@@ -182,14 +182,14 @@ des.drawImage(fundo, 0, 0, 1200, 700)
     );
         // --- LOGICA DOS RAIOS AQUI ---
         let raios = "⚡".repeat(jogador.vida); 
-        t2.des_text('Fôlego: ' + raios, 40, 40, 'red', '26px Arial')
+        t2.des_text(raios, 40, 40, 'red', '26px Arial')
         // -----------------------------
         if(fase === 1){
-            fase_txt.des_text(508, 40,'./img/jogador_varzea.png')
+            fase_txt.des_imagem('./img/jogador_varzea.png', 510, -50, 200, 170)
         }else if(fase === 2){
-            fase_txt.des_text('Promessa Futsal', + 480, 50, 'white', '26px Arial')
+            fase_txt.des_imagem('./img/promessa_futsal.png', 510, -50, 200, 170)
         }else if(fase === 3){
-            fase_txt.des_text('Profissional Futebol', + 461, 40, 'white', '26px Arial',)
+            fase_txt.des_imagem('./img/jogador_profissional.png', 510, -50, 200, 170)
         }
     } else {
         t1.des_text('GAME OVER', 450, 350, 'yellow', '60px Arial')
