@@ -1,24 +1,24 @@
 let des = document.getElementById('des').getContext('2d')
 
-let jogadorInimigo = new JogadorInimigo(1300, 325, 120, 100, './img/jogador_inimigo.png')
-let jogadorInimigo2 = new JogadorInimigo(1500, 125, 120, 100, './img/jogador_inimigo.png')
-let jogadorInimigo3 = new JogadorInimigo(1700, 400, 120, 100, './img/jogador_inimigo.png')
-let jogadorInimigo4 = new JogadorInimigo(1700, 400, 120, 100, './img/jogador_inimigo.png')
-let jogadorInimigo5 = new JogadorInimigo(1700, 400, 120, 100, './img/jogador_inimigo.png')
+let jogadorInimigo = new JogadorInimigo(1300, 325, 120, 105, './img/jogador_inimigo.png')
+let jogadorInimigo2 = new JogadorInimigo(1500, 125, 125, 105, './img/jogador_inimigo.png')
+let jogadorInimigo3 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
+let jogadorInimigo4 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
+let jogadorInimigo5 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadoraAmigo5 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
 let jogadoraAmigo6 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
 
 let fundo = new Image()
 
-jogadorInimigo.vel = 7
-jogadorInimigo2.vel = 7
-jogadorInimigo3.vel = 7
-jogadorInimigo4.vel = 7
-jogadorInimigo5.vel = 7
-jogadoraAmigo5.vel = 5
-jogadoraAmigo6.vel = 5
+jogadorInimigo.vel = 8
+jogadorInimigo2.vel = 8
+jogadorInimigo3.vel = 8
+jogadorInimigo4.vel = 8
+jogadorInimigo5.vel = 8
+jogadoraAmigo5.vel = 6
+jogadoraAmigo6.vel = 6
 
-let jogador = new Jogador(100, 325, 110, 110, './img/jogador_001.png')
+let jogador = new Jogador(100, 325, 112, 112, './img/jogador_001.png')
 
 let t1 = new Text()
 let t2 = new Text()
@@ -40,9 +40,9 @@ document.addEventListener('keydown', (e) => {
     motor.play();
     
     if (e.key === 'w' || e.key === 'ArrowUp') {
-        jogador.dir = -7;
+        jogador.dir = -10;
     } else if (e.key === 's' || e.key === 'ArrowDown') {
-        jogador.dir = 7; 
+        jogador.dir = 10; 
     }
 });
 document.addEventListener('keyup', (e) => {
@@ -59,22 +59,22 @@ function game_over() {
 }
 
 function ver_fase() { 
-    if (jogador.pontos > 5 && fase === 1) {
+    if (jogador.pontos > 10 && fase === 1) {
         fase = 2
-        jogadorInimigo.vel = 9
-        jogadorInimigo2.vel = 9
-        jogadorInimigo3.vel = 9
-        jogadorInimigo4.vel = 9
-        jogadorInimigo5.vel = 9
-        jogadoraAmigo5.vel = 6
-        jogadoraAmigo6.vel = 6
-    } else if (jogador.pontos > 15 && fase === 2) {
+        jogadorInimigo.vel = 10
+        jogadorInimigo2.vel = 10
+        jogadorInimigo3.vel = 10
+        jogadorInimigo4.vel = 10
+        jogadorInimigo5.vel = 10
+        jogadoraAmigo5.vel = 7
+        jogadoraAmigo6.vel = 7
+    } else if (jogador.pontos > 20 && fase === 2) {
         fase = 3
-        jogadorInimigo.vel = 11
-        jogadorInimigo2.vel = 11
-        jogadorInimigo3.vel = 11
-        jogadorInimigo4.vel = 11
-        jogadorInimigo5.vel = 11
+        jogadorInimigo.vel = 12
+        jogadorInimigo2.vel = 12
+        jogadorInimigo3.vel = 12
+        jogadorInimigo4.vel = 12
+        jogadorInimigo5.vel = 12
         jogadoraAmigo5.vel = 8
         jogadoraAmigo6.vel = 8
     }
@@ -153,6 +153,7 @@ function pontuacao() {
     }
 }
 
+
 function desenha() {
     // Define o fundo de acordo com a fase
 if (fase === 1) {
@@ -176,20 +177,20 @@ des.drawImage(fundo, 0, 0, 1200, 700)
         jogadoraAmigo6.des_jogador()
         jogador.des_jogador()
         
-        
-        t1.des_text('Gols: ' + jogador.pontos, 1000, 40, 'yellow', '26px Arial')
-        
+        t1.des_placar_com_logo(
+        jogador.pontos,1000,20,'#2AA8E6','bold 30px Impact, Verdana','./img/gols.png'
+    );
         // --- LOGICA DOS RAIOS AQUI ---
         let raios = "⚡".repeat(jogador.vida); 
         t2.des_text('Fôlego: ' + raios, 40, 40, 'red', '26px Arial')
         // -----------------------------
         if(fase === 1){
-            fase_txt.des_text('Jogador Várzea' +  550, 40, 'white', '26px Arial')
+            fase_txt.des_text(508, 40,'./img/jogador_varzea.png')
         }else if(fase === 2){
-            fase_txt.des_text('Promessa Futsal' + 550, 40, 'white', '26px Arial')
+            fase_txt.des_text('Promessa Futsal', + 480, 50, 'white', '26px Arial')
         }else if(fase === 3){
-            fase_txt.des_text('Profissional Futebol' + 550, 40, 'white', '26px Arial')
-        }   
+            fase_txt.des_text('Profissional Futebol', + 461, 40, 'white', '26px Arial',)
+        }
     } else {
         t1.des_text('GAME OVER', 450, 350, 'yellow', '60px Arial')
         t2.des_text('Pontuação Final: ' + jogador.pontos, 480, 400, 'white', '25px Arial')

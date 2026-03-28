@@ -148,12 +148,50 @@ class Estrada extends Obj{
         }        
     }
 }
- 
-class Text{
-    des_text(text,x,y,cor,font){
+
+
+class Text {
+    des_text(text, x, y, cor, font) {
         des.fillStyle = cor
         des.lineWidth = '5'
         des.font = font
-        des.fillText(text,x,y)
+        des.fillText(text, x, y)
+    }
+
+        des_placar_com_logo(pontos, x, y, corText, fontText, urlImagemLogo) {
+        des.save(); // salva o estado do canvas
+
+        // --- configuração da imagem d logo ---
+        let imgLogo = new Image();
+        imgLogo.src = urlImagemLogo;
+        
+        // Defina a LARGURA e ALTURA desejada para o logotipo AQUI:
+        let larguraLogo = 160; 
+        let alturaLogo = 120; 
+
+        // Centraliza a imagem no X e Y
+        let logoX = x - (larguraLogo / 2);
+        let logoY = y =0;
+        
+        // Desenha a imagem da logo
+        des.drawImage(imgLogo, logoX, logoY, larguraLogo, alturaLogo);
+
+        // --- Configuração e Alinhamento do Texto da Pontuação ---
+        des.font = fontText;
+        des.fillStyle = corText;
+        des.textBaseline = 'top'; // Alinha o texto pelo topo
+        des.textAlign = 'left';    // Texto cresce para a direita
+
+        //texto do placar
+        let textoPlacar =  + pontos;
+
+        // Medimos a altura do logotipo para centralizar o texto verticalmente
+        // e definimos um espaçamento horizontal (paddingH)
+        let paddingH = 20; 
+
+        // Desenha o texto à direita do logotipo
+        des.fillText(textoPlacar, logoX + larguraLogo + paddingH, logoY + (alturaLogo / 4)); 
+
+        des.restore(); // Restaura o estado original do canvas
     }
 }
