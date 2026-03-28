@@ -5,8 +5,10 @@ let jogadorInimigo2 = new JogadorInimigo(1500, 125, 125, 105, './img/jogador_ini
 let jogadorInimigo3 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo4 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo5 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
+let jogadorInimigo6 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadoraAmigo5 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
 let jogadoraAmigo6 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
+let jogadoraAmigo7 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
 
 let fundo = new Image()
 
@@ -15,8 +17,10 @@ jogadorInimigo2.vel = 8
 jogadorInimigo3.vel = 8
 jogadorInimigo4.vel = 8
 jogadorInimigo5.vel = 8
+jogadorInimigo6.vel = 8
 jogadoraAmigo5.vel = 6
 jogadoraAmigo6.vel = 6
+jogadoraAmigo7.vel = 6
 
 let jogador = new Jogador(100, 325, 112, 112, './img/jogador_001.png')
 
@@ -40,9 +44,9 @@ document.addEventListener('keydown', (e) => {
     motor.play();
     
     if (e.key === 'w' || e.key === 'ArrowUp') {
-        jogador.dir = -10;
+        jogador.dir = -11;
     } else if (e.key === 's' || e.key === 'ArrowDown') {
-        jogador.dir = 10; 
+        jogador.dir = 11; 
     }
 });
 document.addEventListener('keyup', (e) => {
@@ -59,24 +63,28 @@ function game_over() {
 }
 
 function ver_fase() { 
-    if (jogador.pontos > 1 && fase === 1) {
+    if (jogador.pontos > 50 && fase === 1) {
         fase = 2
         jogadorInimigo.vel = 10
         jogadorInimigo2.vel = 10
         jogadorInimigo3.vel = 10
         jogadorInimigo4.vel = 10
         jogadorInimigo5.vel = 10
+        jogadorInimigo6.vel = 10
         jogadoraAmigo5.vel = 7
         jogadoraAmigo6.vel = 7
-    } else if (jogador.pontos > 2 && fase === 2) {
+        jogadoraAmigo7.vel = 7
+    } else if (jogador.pontos > 130 && fase === 2) {
         fase = 3
         jogadorInimigo.vel = 12
         jogadorInimigo2.vel = 12
         jogadorInimigo3.vel = 12
         jogadorInimigo4.vel = 12
         jogadorInimigo5.vel = 12
+        jogadorInimigo6.vel = 12
         jogadoraAmigo5.vel = 8
         jogadoraAmigo6.vel = 8
+        jogadoraAmigo7.vel = 8
     }
 }
 
@@ -111,6 +119,12 @@ function colisao() {
         jogador.vida -= 1
         return;
     }
+    if (jogador.colid(jogadorInimigo6)) {
+        batida.play()
+        jogadorInimigo6.recomeca()
+        jogador.vida -= 1
+        return;
+    }
     if (jogador.colid(jogadoraAmigo5)) {
         batida.play()
         jogadoraAmigo5.recomeca()
@@ -122,6 +136,14 @@ function colisao() {
     if (jogador.colid(jogadoraAmigo6)) {
         batida.play()
         jogadoraAmigo6.recomeca()
+        if(jogador.vida < 5){
+            jogador.vida += 1
+        }
+        return;
+    }
+    if (jogador.colid(jogadoraAmigo7)) {
+        batida.play()
+        jogadoraAmigo7.recomeca()
         if(jogador.vida < 5){
             jogador.vida += 1
         }
@@ -151,6 +173,10 @@ function pontuacao() {
         jogador.pontos += 1
         jogadorInimigo5.recomeca()
     }
+    if (jogador.point(jogadorInimigo6)) {
+        jogador.pontos += 1
+        jogadorInimigo6.recomeca()
+    }
 }
 
 
@@ -173,8 +199,10 @@ des.drawImage(fundo, 0, 0, 1200, 700)
         jogadorInimigo3.des_jogador()
         jogadorInimigo4.des_jogador()
         jogadorInimigo5.des_jogador()
+        jogadorInimigo6.des_jogador()
         jogadoraAmigo5.des_jogador()
         jogadoraAmigo6.des_jogador()
+        jogadoraAmigo7.des_jogador()
         jogador.des_jogador()
         
         t1.des_placar_com_logo(
@@ -205,8 +233,10 @@ function atualiza() {
         jogadorInimigo3.mov_jogador()
         jogadorInimigo4.mov_jogador()
         jogadorInimigo5.mov_jogador()
+        jogadorInimigo6.mov_jogador()
         jogadoraAmigo5.mov_jogador()
         jogadoraAmigo6.mov_jogador()
+        jogadoraAmigo7.mov_jogador()
         colisao()
         colisao()
         pontuacao()
