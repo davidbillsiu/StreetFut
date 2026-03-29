@@ -37,6 +37,7 @@ batida.volume = 0.5
 
 let jogar = true
 let fase = 1
+let ganhou = false
 
 document.getElementById('des').addEventListener('click', (e) => {
     if (jogar) return
@@ -45,13 +46,13 @@ document.getElementById('des').addEventListener('click', (e) => {
     let mouseX = e.clientX - rect.left
     let mouseY = e.clientY - rect.top
 
-    // clicou em jogar_novamente.png
-    if (mouseX >= 300 && mouseX <= 550 && mouseY >= 590 && mouseY <= 670) {
+    // jogar novamente (tanto no game over quanto no venceu)
+    if (mouseX >= 120 && mouseX <= 470 && mouseY >= 500 && mouseY <= 670) {
         window.location.href = './street_fut.html'
     }
 
-    // clicou em menu.png
-    if (mouseX >= 650 && mouseX <= 900 && mouseY >= 590 && mouseY <= 670) {
+    // menu (tanto no game over quanto no venceu)
+    if (mouseX >= 700 && mouseX <= 1020 && mouseY >= 500 && mouseY <= 650) {
         window.location.href = './index.html'
     }
 })
@@ -78,10 +79,15 @@ function game_over() {
         jogar = false
         motor.pause()
     }
+    if (jogador.pontos >= 600) {
+        ganhou = true
+        jogar = false
+        motor.pause()
+    }
 }
 
 function ver_fase() { 
-    if (jogador.pontos > 3 && fase === 1) {
+    if (jogador.pontos > 50 && fase === 1) {
         fase = 2
         jogadorInimigo.vel = 10
         jogadorInimigo2.vel = 10
@@ -92,7 +98,7 @@ function ver_fase() {
         jogadoraAmigo5.vel = 7
         jogadoraAmigo6.vel = 7
         jogadoraAmigo7.vel = 7
-    } else if (jogador.pontos > 5 && fase === 2) {
+    } else if (jogador.pontos > 140 && fase === 2) {
         fase = 3
         jogadorInimigo.vel = 12
         jogadorInimigo2.vel = 12
@@ -232,7 +238,7 @@ des.drawImage(fundo, 0, 0, 1200, 700)
         // --- LOGICA DOS RAIOS AQUI ---
          for (let i = 0; i < jogador.vida; i++) {
             t2.des_imagem('./img/raio_img.png', 40 + (i * 40), 10, 35, 35)
-        } // ✅ fecha o for aqui
+        } 
 
         // imagem da fase
         if (fase === 1) {
@@ -243,15 +249,22 @@ des.drawImage(fundo, 0, 0, 1200, 700)
             fase_txt.des_imagem('./img/jogador_profissional.png', 510, -50, 200, 170)
         }
 
-    }else if(pontos === 30){
-        t1.des_imagem('./img/venceu.png', 260,150,700,350)
-    }else {
-        t1.des_imagem('./img/game_over.png', 260, 150, 700, 350)
-        t2.des_text('Gols Feitos: ' + jogador.pontos, 490, 100, '#2AA8E6','bold 30px Impact, Verdana')
-        t1.des_imagem('./img/jogar_novamente.png', 120, 500, 350, 170)
-        t1.des_imagem('./img/menu.png', 700, 500, 320, 150)
-    }
+    } else if (ganhou) {
+    // tela de vitória
+    t1.des_imagem('./img/venceu.png', 260, 150, 700, 350)
+    t2.des_text('Gols Feitos: ' + jogador.pontos, 490, 100, '#2AA8E6', 'bold 30px Impact, Verdana')
+    t1.des_imagem('./img/jogar_novamente.png', 120, 500, 350, 170)
+    t1.des_imagem('./img/menu.png', 700, 500, 320, 150)
+
+} else {
+    // tela de game over
+    t1.des_imagem('./img/game_over.png', 260, 150, 700, 350)
+    t2.des_text('Gols Feitos: ' + jogador.pontos, 490, 100, '#2AA8E6', 'bold 30px Impact, Verdana')
+    t1.des_imagem('./img/jogar_novamente.png', 120, 500, 350, 170)
+    t1.des_imagem('./img/menu.png', 700, 500, 320, 150)
 }
+}
+
 function atualiza() {
     if (jogar) {
         jogador.mov_jogador()
