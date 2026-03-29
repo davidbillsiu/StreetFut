@@ -3,6 +3,23 @@
     margin: 0;
 }
 
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 body{
     background-image: url(./img/fundo.png);
     background-size: cover;
@@ -12,4 +29,9 @@ body{
     color: rgb(186, 186, 186);
     height: 100vh;
     overflow: hidden;
+}
+
+.davi{
+	-webkit-animation: fade-in 2.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	        animation: fade-in 2.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
 }
