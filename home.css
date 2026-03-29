@@ -1,9 +1,9 @@
 *{
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
-body{
+body {
     background-image: url(./img/fundo_principal.png);
     background-size: cover;
     background-position: center;
@@ -14,14 +14,32 @@ body{
     overflow: hidden;
 }
 
-.jogar{
-    margin-top: -400px;
-    transition: 2s;
+.jogar {
+    margin-top: -180px;
+    width: 450px;       /*tamanho base definido */
+    height: 148px;      /*tamanho base definido */
+    transition: transform 0.3s, width 0.3s, height 0.3s; /*transition na base */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.jogar:hover{
-    transition: 5s;
-    margin-top: -398px;
+.jogar:hover {
+    transform: scale(1.08);  /*aumenta 8% suavemente */
+    width: 500px;
+    height: 164px;
+}
+.manual{
+    margin-top: -180px;
+    width: 450px;
+    height: 148px;
+    transition: transform 0.3s, width 0.3s, height 0.3s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.manual:hover {
+    transform: scale(1.08);
     width: 500px;
     height: 164px;
 }
