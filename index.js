@@ -29,8 +29,8 @@ let t2 = new Text()
 let t3 = new Text()
 let fase_txt = new Text()
 
-let motor = new Audio('./img/motor.wav')
-let batida = new Audio('./img/batida.mp3')
+let motor = new Audio('./img/youNever.mp3')
+let batida = new Audio('./img/juiz_apito.m4a')
 motor.volume = 0.5
 motor.loop = true
 batida.volume = 0.5
@@ -150,7 +150,6 @@ function colisao() {
         return;
     }
     if (jogador.colid(jogadoraAmigo5)) {
-        batida.play()
         jogador.pontos += 1
         jogadoraAmigo5.recomeca()
         if(jogador.vida < 5){
@@ -159,7 +158,6 @@ function colisao() {
         return;
     }
     if (jogador.colid(jogadoraAmigo6)) {
-        batida.play()
         jogador.pontos += 1
         jogadoraAmigo6.recomeca()
         if(jogador.vida < 5){
@@ -168,7 +166,6 @@ function colisao() {
         return;
     }
     if (jogador.colid(jogadoraAmigo7)) {
-        batida.play()
         jogador.pontos += 1
         jogadoraAmigo7.recomeca()
         if(jogador.vida < 5){
