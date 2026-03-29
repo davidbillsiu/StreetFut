@@ -1,14 +1,14 @@
 let des = document.getElementById('des').getContext('2d')
 
-let jogadorInimigo = new JogadorInimigo(1300, 325, 120, 105, './img/jogador_inimigo.png')
+let jogadorInimigo = new JogadorInimigo(1300, 325, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo2 = new JogadorInimigo(1500, 125, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo3 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo4 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo5 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
 let jogadorInimigo6 = new JogadorInimigo(1700, 400, 125, 105, './img/jogador_inimigo.png')
-let jogadoraAmigo5 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
-let jogadoraAmigo6 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
-let jogadoraAmigo7 = new JogadorInimigo(1700, 400, 120, 100, './img/raio_folego.png')
+let jogadoraAmigo5 = new JogadorInimigo(1700, 400, 95, 100, './img/raio_img.png')
+let jogadoraAmigo6 = new JogadorInimigo(1700, 400, 95, 100, './img/raio_img.png')
+let jogadoraAmigo7 = new JogadorInimigo(1700, 400, 95, 100, './img/raio_img.png')
 
 let fundo = new Image()
 
@@ -38,6 +38,24 @@ batida.volume = 0.5
 let jogar = true
 let fase = 1
 
+document.getElementById('des').addEventListener('click', (e) => {
+    if (jogar) return
+
+    let rect = document.getElementById('des').getBoundingClientRect()
+    let mouseX = e.clientX - rect.left
+    let mouseY = e.clientY - rect.top
+
+    // clicou em jogar_novamente.png
+    if (mouseX >= 300 && mouseX <= 550 && mouseY >= 590 && mouseY <= 670) {
+        window.location.href = './street_fut.html'
+    }
+
+    // clicou em menu.png
+    if (mouseX >= 650 && mouseX <= 900 && mouseY >= 590 && mouseY <= 670) {
+        window.location.href = './index.html'
+    }
+})
+
 document.addEventListener('keydown', (e) => {
     if (e.repeat) return; 
     
@@ -63,7 +81,7 @@ function game_over() {
 }
 
 function ver_fase() { 
-    if (jogador.pontos > 50 && fase === 1) {
+    if (jogador.pontos > 3 && fase === 1) {
         fase = 2
         jogadorInimigo.vel = 10
         jogadorInimigo2.vel = 10
@@ -74,7 +92,7 @@ function ver_fase() {
         jogadoraAmigo5.vel = 7
         jogadoraAmigo6.vel = 7
         jogadoraAmigo7.vel = 7
-    } else if (jogador.pontos > 130 && fase === 2) {
+    } else if (jogador.pontos > 5 && fase === 2) {
         fase = 3
         jogadorInimigo.vel = 12
         jogadorInimigo2.vel = 12
@@ -127,6 +145,7 @@ function colisao() {
     }
     if (jogador.colid(jogadoraAmigo5)) {
         batida.play()
+        jogador.pontos += 1
         jogadoraAmigo5.recomeca()
         if(jogador.vida < 5){
             jogador.vida += 1
@@ -135,6 +154,7 @@ function colisao() {
     }
     if (jogador.colid(jogadoraAmigo6)) {
         batida.play()
+        jogador.pontos += 1
         jogadoraAmigo6.recomeca()
         if(jogador.vida < 5){
             jogador.vida += 1
@@ -143,6 +163,7 @@ function colisao() {
     }
     if (jogador.colid(jogadoraAmigo7)) {
         batida.play()
+        jogador.pontos += 1
         jogadoraAmigo7.recomeca()
         if(jogador.vida < 5){
             jogador.vida += 1
@@ -209,19 +230,26 @@ des.drawImage(fundo, 0, 0, 1200, 700)
         jogador.pontos,1000,20,'#2AA8E6','bold 30px Impact, Verdana','./img/gols.png'
     );
         // --- LOGICA DOS RAIOS AQUI ---
-        let raios = "⚡".repeat(jogador.vida); 
-        t2.des_text(raios, 40, 40, 'red', '26px Arial')
-        // -----------------------------
-        if(fase === 1){
+         for (let i = 0; i < jogador.vida; i++) {
+            t2.des_imagem('./img/raio_img.png', 40 + (i * 40), 10, 35, 35)
+        } // ✅ fecha o for aqui
+
+        // imagem da fase
+        if (fase === 1) {
             fase_txt.des_imagem('./img/jogador_varzea.png', 510, -50, 200, 170)
-        }else if(fase === 2){
+        } else if (fase === 2) {
             fase_txt.des_imagem('./img/promessa_futsal.png', 510, -50, 200, 170)
-        }else if(fase === 3){
+        } else if (fase === 3) {
             fase_txt.des_imagem('./img/jogador_profissional.png', 510, -50, 200, 170)
         }
-    } else {
-        t1.des_text('GAME OVER', 450, 350, 'yellow', '60px Arial')
-        t2.des_text('Pontuação Final: ' + jogador.pontos, 480, 400, 'white', '25px Arial')
+
+    }else if(pontos === 30){
+        t1.des_imagem('./img/venceu.png', 260,150,700,350)
+    }else {
+        t1.des_imagem('./img/game_over.png', 260, 150, 700, 350)
+        t2.des_text('Gols Feitos: ' + jogador.pontos, 490, 100, '#2AA8E6','bold 30px Impact, Verdana')
+        t1.des_imagem('./img/jogar_novamente.png', 120, 500, 350, 170)
+        t1.des_imagem('./img/menu.png', 700, 500, 320, 150)
     }
 }
 function atualiza() {
