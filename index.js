@@ -33,7 +33,7 @@ let motor = new Audio('./img/youNever.mp3')
 let batida = new Audio('./img/juiz_apito.m4a')
 motor.volume = 0.5
 motor.loop = true
-batida.volume = 0.5
+batida.volume = 0.3
 
 let jogar = true
 let fase = 1

@@ -1,0 +1,19 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url(./img2players/fundo_2players.png);
+    color: rgb(186, 186, 186);
+}
+
+canvas{
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image: url(./img2players/campo_2p.png);
+}
