@@ -1,16 +1,6 @@
-// =============================================
-//   CONSTANTES
-// =============================================
-
-const LARGURA     = 1200
-const ALTURA      = 700
-const GOLEIRAALT  = 200
-const GOLEIRATORY = (ALTURA - GOLEIRAALT) / 2
-const PONTOS_MAX  = 7
-
-// =============================================
-//   IMAGENS
-// =============================================
+const LARGURA = 1200
+const ALTURA = 700
+const PONTOS_MAX = 7
 
 const IMGS = {}
 
@@ -20,22 +10,12 @@ function carregarImagens(lista, callback) {
 
     lista.forEach(({ nome, src }) => {
         const img = new Image()
-        img.onload = () => {
-            carregadas++
-            if (carregadas === total) callback()
-        }
-        img.onerror = () => {
-            carregadas++
-            if (carregadas === total) callback()
-        }
+        img.onload = () => { carregadas++; if (carregadas === total) callback() }
+        img.onerror = () => { carregadas++; if (carregadas === total) callback() }
         img.src = src
         IMGS[nome] = img
     })
 }
-
-// =============================================
-//   CLASSES
-// =============================================
 
 class ObjBase {
     constructor(x, y, w, h, nomeImg) {
@@ -48,16 +28,16 @@ class ObjBase {
 
     desenha() {
         const img = IMGS[this.nomeImg]
-        if (img && img.complete && img.naturalWidth > 0) {
+        if (img && img.complete) {
             des.drawImage(img, this.x, this.y, this.w, this.h)
         } else {
-            des.fillStyle = (this.nomeImg === 'bola') ? '#fff' : '#ffcc00'
+            des.fillStyle = '#fff'
             des.fillRect(this.x, this.y, this.w, this.h)
         }
     }
 }
 
-class Raquete extends ObjBase {
+class Jogador extends ObjBase {
     constructor(x, y, w, h, nomeImg) {
         super(x, y, w, h, nomeImg)
         this.vel = 0
@@ -66,195 +46,177 @@ class Raquete extends ObjBase {
 
     mover() {
         this.y += this.vel
-        if (this.y < 20) this.y = 20
-        if (this.y + this.h > 680) this.y = 680 - this.h
+
+        if (this.y < 0) this.y = 0
+        if (this.y + this.h > ALTURA) this.y = ALTURA - this.h
     }
 }
 
 class Bola extends ObjBase {
     constructor() {
-        const tam = 60
-        super(LARGURA / 2 - tam / 2, ALTURA / 2 - tam / 2, tam, tam, 'bola')
-        this._velX = 0
-        this._velY = 0
+        super(LARGURA / 2 - 30, ALTURA / 2 - 30, 60, 60, 'bola')
+        this.velX = 0
+        this.velY = 0
+        this.gol = false
     }
 
-    lanca(direcao = 1) {
-        const angulo = (Math.random() * 60 - 30) * (Math.PI / 180)
-        const spd = 7
-        this._velX = direcao * spd * Math.cos(angulo)
-        this._velY = spd * Math.sin(angulo)
+    lancar() {
+        this.velX = (Math.random() > 0.5 ? 1 : -1) * 6
+        this.velY = (Math.random() * 4 - 2)
+        this.gol = false
     }
 
     mover() {
-        this.x += this._velX
-        this.y += this._velY
+        this.x += this.velX
+        this.y += this.velY
 
-        if (this.y <= 0) {
-            this.y = 0
-            this._velY *= -1
+        if (this.y <= 0 || this.y + this.h >= ALTURA) {
+            this.velY *= -1
         }
-        if (this.y + this.h >= ALTURA) {
-            this.y = ALTURA - this.h
-            this._velY *= -1
-        }
-    }
-
-    // 🔥 CORREÇÃO COMPLETA AQUI
-    rebate(raquete) {
-        if (
-            this.x < raquete.x + raquete.w &&
-            this.x + this.w > raquete.x &&
-            this.y < raquete.y + raquete.h &&
-            this.y + this.h > raquete.y
-        ) {
-            const centro = raquete.y + raquete.h / 2
-            const relativo = (this.y + this.h / 2 - centro) / (raquete.h / 2)
-
-            let angulo = relativo * 60 * (Math.PI / 180)
-
-            // evita ângulo muito vertical
-            const LIMITE = 25 * (Math.PI / 180)
-            if (Math.abs(angulo) > (Math.PI / 2 - LIMITE)) {
-                angulo = (angulo > 0 ? 1 : -1) * (Math.PI / 2 - LIMITE)
-            }
-
-            const velocidadeAtual = Math.sqrt(this._velX**2 + this._velY**2)
-            let spd = Math.min(velocidadeAtual + 0.5, 18)
-
-            this._velX = (this._velX > 0 ? -1 : 1) * spd * Math.cos(angulo)
-            this._velY = spd * Math.sin(angulo)
-
-            // força velocidade mínima no X
-            const MIN_X = 4
-            if (Math.abs(this._velX) < MIN_X) {
-                this._velX = (this._velX > 0 ? 1 : -1) * MIN_X
-            }
-
-            if (this._velX > 0) this.x = raquete.x + raquete.w + 2
-            else this.x = raquete.x - this.w - 2
-
-            return true
-        }
-        return false
-    }
-
-    saiu() {
-        if (this.x + this.w < 0) return 'esquerda'
-        if (this.x > LARGURA) return 'direita'
-        return null
-    }
-
-    golNaGoleira() {
-        const centro = this.y + this.h / 2
-        return centro > GOLEIRATORY && centro < GOLEIRATORY + GOLEIRAALT
     }
 
     resetar() {
-        this.x = LARGURA / 2 - this.w / 2
-        this.y = ALTURA / 2 - this.h / 2
-        this._velX = 0
-        this._velY = 0
+        this.x = LARGURA / 2 - 30
+        this.y = ALTURA / 2 - 30
+        this.velX = 0
+        this.velY = 0
+        this.gol = false
     }
 }
 
-// =============================================
-//   VARIÁVEIS
 // =============================================
 
 const des = document.getElementById('des').getContext('2d')
 
-let jogEsq, jogDir, bola
-let jogar = false
-let fim = false
-let vencedor = ''
-let contagem = 0
-const teclas = {}
+let jog1, jog2, bola
+let teclas = {}
 
 // =============================================
-//   INICIALIZAÇÃO
-// =============================================
 
-function inicializarJogo() {
-    jogEsq = new Raquete(30, ALTURA / 2 - 60, 60, 120, 'jogador_esquerdo')
-    jogDir = new Raquete(1110, ALTURA / 2 - 60, 60, 120, 'jogador_direito')
+function iniciar() {
+    jog1 = new Jogador(50, 300, 130, 130, 'jog1')
+    jog2 = new Jogador(1100, 300, 130, 130, 'jog2')
     bola = new Bola()
 
-    iniciarPartida()
+    bola.lancar()
 
-    document.addEventListener('keydown', e => {
-        teclas[e.key] = true
-    })
-    document.addEventListener('keyup', e => {
-        teclas[e.key] = false
-    })
+    document.addEventListener('keydown', e => teclas[e.key] = true)
+    document.addEventListener('keyup', e => teclas[e.key] = false)
 
-    main()
-}
-
-function iniciarPartida() {
-    jogar = true
-    bola.lanca(1)
+    loop()
 }
 
 // =============================================
-//   LÓGICA
+// CONTROLES
 // =============================================
 
 function controles() {
-    const spd = 9
+    jog1.vel = 0
+    jog2.vel = 0
 
-    jogEsq.vel = 0
-    if (teclas['w'] || teclas['W']) jogEsq.vel = -spd
-    if (teclas['s'] || teclas['S']) jogEsq.vel = spd
+    if (teclas['w'] || teclas['W']) jog1.vel = -8
+    if (teclas['s'] || teclas['S']) jog1.vel = 8
 
-    jogDir.vel = 0
-    if (teclas['ArrowUp']) jogDir.vel = -spd
-    if (teclas['ArrowDown']) jogDir.vel = spd
+    if (teclas['ArrowUp']) jog2.vel = -8
+    if (teclas['ArrowDown']) jog2.vel = 8
 }
 
-function atualiza() {
-    if (!jogar) return
+// =============================================
+// COLISÃO COM VELOCIDADE PROGRESSIVA
+// =============================================
 
-    controles()
-    jogEsq.mover()
-    jogDir.mover()
-    bola.mover()
+function colisao(bola, jogador) {
+    if (
+        bola.x < jogador.x + jogador.w &&
+        bola.x + bola.w > jogador.x &&
+        bola.y < jogador.y + jogador.h &&
+        bola.y + bola.h > jogador.y
+    ) {
+        const AUMENTO = 1
+        const VELOCIDADE_MAX = 10
 
-    // 🔥 MELHOR COLISÃO
-    for (let i = 0; i < 2; i++) {
-        bola.rebate(jogEsq)
-        bola.rebate(jogDir)
+        let velocidade = Math.sqrt(bola.velX ** 2 + bola.velY ** 2)
+        velocidade = Math.min(velocidade + AUMENTO, VELOCIDADE_MAX)
+
+        let direcaoX = bola.velX > 0 ? 1 : -1
+
+        let impacto = (bola.y + bola.h / 2) - (jogador.y + jogador.h / 2)
+        impacto /= (jogador.h / 2)
+
+        bola.velX = direcaoX * -velocidade
+        bola.velY = impacto * velocidade
+
+        if (bola.velX > 0) {
+            bola.x = jogador.x + jogador.w
+        } else {
+            bola.x = jogador.x - bola.w
+        }
     }
 }
 
 // =============================================
-//   DESENHO
+// GOL
 // =============================================
 
-function desenha() {
+function verificarGol() {
+    if (bola.gol) return
+
+    if (bola.x <= 0) {
+        jog2.pontos++
+        bola.gol = true
+    }
+
+    if (bola.x + bola.w >= LARGURA) {
+        jog1.pontos++
+        bola.gol = true
+    }
+
+    if (bola.gol) {
+        setTimeout(() => {
+            bola.resetar()
+            bola.lancar()
+        }, 1000)
+    }
+}
+
+// =============================================
+
+function atualizar() {
+    controles()
+
+    jog1.mover()
+    jog2.mover()
+    bola.mover()
+
+    colisao(bola, jog1)
+    colisao(bola, jog2)
+
+    verificarGol()
+}
+
+function desenhar() {
     des.clearRect(0, 0, LARGURA, ALTURA)
-    jogEsq.desenha()
-    jogDir.desenha()
+
+    jog1.desenha()
+    jog2.desenha()
     bola.desenha()
+
+    des.fillStyle = 'yellow'
+    des.font = '40px Arial'
+    des.fillText(jog1.pontos, 550, 50)
+    des.fillText(jog2.pontos, 650, 50)
 }
 
-// =============================================
-//   LOOP
-// =============================================
-
-function main() {
-    desenha()
-    atualiza()
-    requestAnimationFrame(main)
+function loop() {
+    atualizar()
+    desenhar()
+    requestAnimationFrame(loop)
 }
 
-// =============================================
-//   START
 // =============================================
 
 carregarImagens([
-    { nome: 'jogador_esquerdo', src: './img2players/jogador_esquerdo.png' },
-    { nome: 'jogador_direito', src: './img2players/jogador_direito.png' },
+    { nome: 'jog1', src: './img2players/jogador_esquerdo.png' },
+    { nome: 'jog2', src: './img2players/jogador_direito.png' },
     { nome: 'bola', src: './img2players/bola.png' }
-], inicializarJogo)
+], iniciar)

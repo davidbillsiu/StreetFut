@@ -17,3 +17,10 @@ canvas{
     right: 0;
     background-image: url(./img2players/campo_2p.png);
 }
+
+img{
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 120px;
+    height: 75px;
+}
