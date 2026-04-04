@@ -66,14 +66,20 @@ class Bola extends ObjBase {
         this.gol = false
     }
 
-    mover() {
-        this.x += this.velX
-        this.y += this.velY
+   mover() {
+    this.x += this.velX
+    this.y += this.velY
 
-        if (this.y <= 0 || this.y + this.h >= ALTURA) {
-            this.velY *= -1
-        }
+    if (this.y <= 0) {
+        this.y = 0           // ✅ Gruda na borda superior
+        this.velY *= -1
     }
+
+    if (this.y + this.h >= ALTURA) {
+        this.y = ALTURA - this.h  // ✅ Gruda na borda inferior
+        this.velY *= -1
+    }
+}
 
     resetar() {
         this.x = LARGURA / 2 - 30
@@ -126,30 +132,83 @@ function controles() {
 // =============================================
 
 function colisao(bola, jogador) {
-    if (
-        bola.x < jogador.x + jogador.w &&
-        bola.x + bola.w > jogador.x &&
-        bola.y < jogador.y + jogador.h &&
-        bola.y + bola.h > jogador.y
-    ) {
-        const AUMENTO = 1
-        const VELOCIDADE_MAX = 10
+    const bolaEsq = bola.x
+    const bolaDirE = bola.x + bola.w
+    const bolaTopo = bola.y
+    const bolaBase = bola.y + bola.h
 
+    const jogEsq = jogador.x
+    const jogDir = jogador.x + jogador.w
+    const jogTopo = jogador.y
+    const jogBase = jogador.y + jogador.h
+
+    const colidiu =
+        bolaDirE > jogEsq &&
+        bolaEsq < jogDir &&
+        bolaBase > jogTopo &&
+        bolaTopo < jogBase
+
+    if (!colidiu) return
+
+    // Calcula sobreposição em cada lado
+    const overlapEsq = bolaDirE - jogEsq   // bola vindo da esquerda
+    const overlapDir = jogDir - bolaEsq    // bola vindo da direita
+    const overlapTopo = bolaBase - jogTopo // bola vindo de cima
+    const overlapBase = jogBase - bolaTopo // bola vindo de baixo
+
+    const menorH = Math.min(overlapEsq, overlapDir)
+    const menorV = Math.min(overlapTopo, overlapBase)
+
+    const AUMENTO = 1
+    const VELOCIDADE_MAX = 15
+
+    let velocidade = Math.sqrt(bola.velX ** 2 + bola.velY ** 2)
+    velocidade = Math.min(velocidade + AUMENTO, VELOCIDADE_MAX)
+
+    if (menorH < menorV) {
+        // Colisão lateral
         let velocidade = Math.sqrt(bola.velX ** 2 + bola.velY ** 2)
-        velocidade = Math.min(velocidade + AUMENTO, VELOCIDADE_MAX)
-
-        let direcaoX = bola.velX > 0 ? 1 : -1
-
-        let impacto = (bola.y + bola.h / 2) - (jogador.y + jogador.h / 2)
-        impacto /= (jogador.h / 2)
-
-        bola.velX = direcaoX * -velocidade
-        bola.velY = impacto * velocidade
-
-        if (bola.velX > 0) {
-            bola.x = jogador.x + jogador.w
+        velocidade = Math.min(velocidade + AUMENTO, VELOCIDADE_MAX) // ✅ sempre aumenta
+    
+        bola.velX *= -1
+    
+        if (overlapEsq < overlapDir) {
+            bola.x = jogEsq - bola.w
         } else {
-            bola.x = jogador.x - bola.w
+            bola.x = jogDir
+        }
+    
+        let impacto = (bola.y + bola.h / 2) - (jogador.y + jogador.h / 2)
+        impacto /= (jogador.h / 2)  // valor entre -1 e 1
+    
+        const dirX = bola.velX > 0 ? 1 : -1
+    
+        // ✅ Garante velocidade mínima em X para não "engolar" a bola
+        const velYNova = impacto * velocidade
+        const velXMinimo = velocidade * 0.6  // pelo menos 60% da velocidade vai pro X
+        const velXNova = Math.max(Math.abs(velYNova) < velocidade
+            ? Math.sqrt(velocidade ** 2 - velYNova ** 2)
+            : velXMinimo, velXMinimo)
+    
+        bola.velX = dirX * velXNova
+        bola.velY = velYNova
+    } else {
+        // Colisão vertical (bola bate no topo/base do personagem)
+        bola.velY *= -1
+    
+        let velocidade = Math.sqrt(bola.velX ** 2 + bola.velY ** 2)
+        velocidade = Math.min(velocidade + AUMENTO, VELOCIDADE_MAX) // ✅ aumenta aqui também
+    
+        // Mantém direção mas aplica nova velocidade
+        const dirX = bola.velX > 0 ? 1 : -1
+        const dirY = bola.velY > 0 ? 1 : -1
+        bola.velX = dirX * velocidade * 0.7
+        bola.velY = dirY * velocidade * 0.7
+    
+        if (overlapTopo < overlapBase) {
+            bola.y = jogTopo - bola.h
+        } else {
+            bola.y = jogBase
         }
     }
 }
