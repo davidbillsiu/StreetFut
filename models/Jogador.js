@@ -140,14 +140,7 @@ class JogadorInimigo extends Obj{
     }
 }
  
-class Estrada extends Obj{
-    mov_est(){
-        this.x -= 6
-        if(this.x < -60){
-            this.x = 1300
-        }        
-    }
-}
+
 
 
 class Text {
